@@ -4,10 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EnterpriseArchitecture.API.Controllers;
 
-[ApiController]
-[Produces("application/json")]
-[Route("api/v1/[controller]")]
-public class AuthController: ControllerBase
+public class AuthController: BaseApiController
 {
     private readonly IAuthService _authService;
 
