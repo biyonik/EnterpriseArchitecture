@@ -1,10 +1,11 @@
-﻿using EnterpriseArchitecture.DataTransformationObjects.Concrete.Auth;
+﻿using EnterpriseArchitecture.Core.Utilities.Result.Abstract;
+using EnterpriseArchitecture.DataTransformationObjects.Concrete.Auth;
 using EnterpriseArchitecture.Entities.Concrete;
 
 namespace EnterpriseArchitecture.Business.Abstract;
 
 public interface IAuthService
 {
-    string Register(RegisterDto registerDto);
+    IResult Register(RegisterDto registerDto);
     User? Login(LoginDto loginDto);
 }
