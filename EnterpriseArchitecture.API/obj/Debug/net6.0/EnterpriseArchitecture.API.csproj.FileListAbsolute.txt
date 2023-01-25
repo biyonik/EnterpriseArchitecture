@@ -49,3 +49,4 @@ I:\Projects\NetCoreProjects\EnterpriseArchitecture\EnterpriseArchitecture.API\ob
 I:\Projects\NetCoreProjects\EnterpriseArchitecture\EnterpriseArchitecture.API\obj\Debug\net6.0\EnterpriseArchitecture.API.pdb
 I:\Projects\NetCoreProjects\EnterpriseArchitecture\EnterpriseArchitecture.API\obj\Debug\net6.0\EnterpriseArchitecture.API.genruntimeconfig.cache
 I:\Projects\NetCoreProjects\EnterpriseArchitecture\EnterpriseArchitecture.API\obj\Debug\net6.0\ref\EnterpriseArchitecture.API.dll
+I:\Projects\NetCoreProjects\EnterpriseArchitecture\EnterpriseArchitecture.API\bin\Debug\net6.0\FluentValidation.dll

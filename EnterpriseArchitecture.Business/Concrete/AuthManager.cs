@@ -1,7 +1,10 @@
 ﻿using EnterpriseArchitecture.Business.Abstract;
+using EnterpriseArchitecture.Business.ValidationRules.FluentValidation;
 using EnterpriseArchitecture.Core.Utilities.Hashing;
 using EnterpriseArchitecture.DataTransformationObjects.Concrete.Auth;
+using EnterpriseArchitecture.DataTransformationObjects.Concrete.User;
 using EnterpriseArchitecture.Entities.Concrete;
+using FluentValidation.Results;
 
 namespace EnterpriseArchitecture.Business.Concrete;
 
@@ -16,7 +19,21 @@ public class AuthManager: IAuthService
 
     public bool Register(RegisterDto registerDto)
     {
-        return true;
+        UserValidator userValidator = new UserValidator();
+        ValidationResult validationResult = userValidator.Validate(registerDto);
+        if (validationResult.IsValid)
+        {
+            AddUserDto addUserDto = new()
+            {
+                Email = registerDto.Email,
+                Name = registerDto.Name,
+                Password = registerDto.Password,
+                ImageUrl = registerDto.ImageUrl
+            };
+            _userService.Add(addUserDto);
+            return true;
+        }
+        return false;
     }
 
     public User? Login(LoginDto loginDto)

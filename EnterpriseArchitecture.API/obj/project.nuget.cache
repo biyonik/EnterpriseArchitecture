@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "hU2vFA5Bql5yZdPeQz003mMeuAxTJsf1GgpqNkkM80P7lQD2juLL5Dayup4dznkA01i3tmWPIc+ST2YBWXRZ8w==",
+  "dgSpecHash": "KzctXoW+Fun1SoT0HVhMA3nrJgp9yrWyHyFlU9ojSGh1PCw3PFaCr2rH9+RYl4VZ3dn9UHZ4DtZMSNvsIwPqUw==",
   "success": true,
   "projectFilePath": "I:\\Projects\\NetCoreProjects\\EnterpriseArchitecture\\EnterpriseArchitecture.API\\EnterpriseArchitecture.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ahmet\\.nuget\\packages\\autofac\\6.4.0\\autofac.6.4.0.nupkg.sha512",
     "C:\\Users\\ahmet\\.nuget\\packages\\autofac.extensions.dependencyinjection\\8.0.0\\autofac.extensions.dependencyinjection.8.0.0.nupkg.sha512",
+    "C:\\Users\\ahmet\\.nuget\\packages\\fluentvalidation\\11.4.0\\fluentvalidation.11.4.0.nupkg.sha512",
     "C:\\Users\\ahmet\\.nuget\\packages\\microsoft.entityframeworkcore\\6.0.11\\microsoft.entityframeworkcore.6.0.11.nupkg.sha512",
     "C:\\Users\\ahmet\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\6.0.11\\microsoft.entityframeworkcore.abstractions.6.0.11.nupkg.sha512",
     "C:\\Users\\ahmet\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\6.0.11\\microsoft.entityframeworkcore.analyzers.6.0.11.nupkg.sha512",
