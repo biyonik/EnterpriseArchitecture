@@ -1,5 +1,6 @@
 ﻿using EnterpriseArchitecture.Business.Abstract;
 using EnterpriseArchitecture.DataAccess.Abstract;
+using EnterpriseArchitecture.DataTransformationObjects.Concrete.Auth;
 using EnterpriseArchitecture.DataTransformationObjects.Concrete.User;
 
 namespace EnterpriseArchitecture.Business.Concrete;
@@ -12,7 +13,7 @@ public class UserManager: IUserService
         _userDal = userDal;
     }
 
-    public void Add(AddUserDto addUserDto)
+    public void Add(RegisterDto addUserDto)
     {
         throw new NotImplementedException();
     }

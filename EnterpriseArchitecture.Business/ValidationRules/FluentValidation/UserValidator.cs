@@ -1,5 +1,4 @@
 ﻿using EnterpriseArchitecture.DataTransformationObjects.Concrete.Auth;
-using EnterpriseArchitecture.Entities.Concrete;
 using FluentValidation;
 
 namespace EnterpriseArchitecture.Business.ValidationRules.FluentValidation;

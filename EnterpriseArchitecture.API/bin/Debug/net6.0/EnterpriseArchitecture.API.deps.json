@@ -242,6 +242,7 @@
       "EnterpriseArchitecture.Core/1.0.0": {
         "dependencies": {
           "EnterpriseArchitecture.Entities": "1.0.0",
+          "FluentValidation": "11.4.0",
           "Microsoft.EntityFrameworkCore": "6.0.11"
         },
         "runtime": {

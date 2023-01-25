@@ -1,5 +1,6 @@
 ﻿using EnterpriseArchitecture.Business.Abstract;
 using EnterpriseArchitecture.Business.ValidationRules.FluentValidation;
+using EnterpriseArchitecture.Core.CrossCuttingConcerns.Validation;
 using EnterpriseArchitecture.Core.Utilities.Hashing;
 using EnterpriseArchitecture.DataTransformationObjects.Concrete.Auth;
 using EnterpriseArchitecture.DataTransformationObjects.Concrete.User;
@@ -17,23 +18,11 @@ public class AuthManager: IAuthService
         _userService = userService;
     }
 
-    public bool Register(RegisterDto registerDto)
+    public string Register(RegisterDto registerDto)
     {
-        UserValidator userValidator = new UserValidator();
-        ValidationResult validationResult = userValidator.Validate(registerDto);
-        if (validationResult.IsValid)
-        {
-            AddUserDto addUserDto = new()
-            {
-                Email = registerDto.Email,
-                Name = registerDto.Name,
-                Password = registerDto.Password,
-                ImageUrl = registerDto.ImageUrl
-            };
-            _userService.Add(addUserDto);
-            return true;
-        }
-        return false;
+        ValidationTool.Validate(new UserValidator(), registerDto);
+        _userService.Add(registerDto);
+        return "";
     }
 
     public User? Login(LoginDto loginDto)
