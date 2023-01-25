@@ -9,7 +9,7 @@ namespace EnterpriseArchitecture.API.Controllers;
 [Produces("application/json")]
 public class BaseApiController: ControllerBase
 {
-
+    [NonAction]
     public async Task<IActionResult> HandleResult(IResult? result)
     {
         if (result == null) return await Task.FromResult<IActionResult>(BadRequest());
@@ -19,6 +19,7 @@ public class BaseApiController: ControllerBase
         return await Task.FromResult<IActionResult>(Ok(result.Message));
     }
 
+    [NonAction]
     public async Task<IActionResult> HandleResult<T>(IDataResult<T>? result)
     {
         if (result == null) return await Task.FromResult<IActionResult>(BadRequest());

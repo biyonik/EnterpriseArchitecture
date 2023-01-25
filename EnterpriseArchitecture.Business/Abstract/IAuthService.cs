@@ -7,5 +7,5 @@ namespace EnterpriseArchitecture.Business.Abstract;
 public interface IAuthService
 {
     IResult Register(RegisterDto registerDto);
-    User? Login(LoginDto loginDto);
+    IDataResult<User> Login(LoginDto loginDto);
 }

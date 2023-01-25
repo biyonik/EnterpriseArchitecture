@@ -30,16 +30,22 @@ public class AuthManager : IAuthService
             CheckIfEmailIsExist(registerDto.Email),
             CheckIfImageSizeIsLessThanOneMegabytes(imageSize)
         );
+        
         _userService.Add(registerDto);
         return new SuccessResult("Kullanıcı kaydı başarıyla tamamlandı.");
     }
 
-    public User? Login(LoginDto loginDto)
+    public IDataResult<User> Login(LoginDto loginDto)
     {
+        IResult? ruleResult = BusinessRule.Run(
+            CheckIfEmailIsExist(loginDto.Email)
+        );
+
         var userByEmail = _userService.GetByEmail(loginDto.Email);
+
         var result =
             HashingHelper.VerifyPasswordHash(loginDto.Password, userByEmail?.PasswordHash, userByEmail?.PasswordSalt);
-        if (!result) return null;
+        if (!result) return new ErrorDataResult<User>("Kullanıcı bilgileriniz yanlış, lütfen tekrar deneyiniz.");
 
         var user = new User
         {
@@ -48,13 +54,13 @@ public class AuthManager : IAuthService
             Name = userByEmail.Name,
             ImageUrl = userByEmail.ImageUrl
         };
-        return user;
+        return new SuccessDataResult<User>(user);
     }
 
     private IResult CheckIfEmailIsExist(string email)
     {
         var isExist = _userService.GetByEmail(email);
-        return isExist == null ? new SuccessResult() : new ErrorResult("Bu mail adresi daha önce kullanılmış!");
+        return isExist != null ? new SuccessResult() : new ErrorResult("Bu mail adresi daha önce kullanılmış!");
     }
 
     private IResult CheckIfImageSizeIsLessThanOneMegabytes(int imageSize)

@@ -1,5 +1,7 @@
 ﻿using EnterpriseArchitecture.Business.Abstract;
+using EnterpriseArchitecture.Core.Utilities.Result.Abstract;
 using EnterpriseArchitecture.DataTransformationObjects.Concrete.Auth;
+using EnterpriseArchitecture.Entities.Concrete;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EnterpriseArchitecture.API.Controllers;
@@ -16,16 +18,13 @@ public class AuthController: BaseApiController
     [HttpPost("[action]")]
     public async Task<IActionResult> Register(RegisterDto registerDto)
     {
-        var result = await Task.Run(() => _authService.Register(registerDto));
-        return await Task.FromResult<IActionResult>(Ok(result));
+        return await HandleResult(_authService.Register(registerDto));
     }
 
     [HttpPost("[action]")]
     public async Task<IActionResult> Login(LoginDto loginDto)
     {
-        var result = _authService.Login(loginDto);
-        if (result == null) return await Task.FromResult<IActionResult>(NotFound());
-        return await Task.FromResult<IActionResult>(Ok(result));
+        return await HandleResult<User>(_authService.Login(loginDto));
     }
 
 
