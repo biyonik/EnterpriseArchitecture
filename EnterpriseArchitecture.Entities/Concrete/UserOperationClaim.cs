@@ -1,14 +1,17 @@
-﻿using EnterpriseArchitecture.Entities.Abstract;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using EnterpriseArchitecture.Entities.Abstract;
 
 namespace EnterpriseArchitecture.Entities.Concrete;
 
-public class UserOperationClaim: IEntityWithId<Guid>
+public sealed class UserOperationClaim: IEntityWithId<Guid>
 {
     public Guid Id { get; set; }
     
-    public virtual User User { get; set; }
+    [ForeignKey("User")]
     public Guid UserId { get; set; }
+    public User User { get; set; }
 
-    public virtual OperationClaim OperationClaim { get; set; }
+    [ForeignKey("OperationClaim")]
     public Guid OperationClaimId { get; set; }
+    public OperationClaim OperationClaim { get; set; }
 }

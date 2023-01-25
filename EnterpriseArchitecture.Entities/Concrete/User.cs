@@ -2,7 +2,7 @@
 
 namespace EnterpriseArchitecture.Entities.Concrete;
 
-public class User: IEntityWithId<Guid>
+public sealed class User: IEntityWithId<Guid>
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
@@ -11,5 +11,5 @@ public class User: IEntityWithId<Guid>
     public byte[] PasswordSalt { get; set; }
     public byte[] PasswordHash { get; set; }
 
-    public virtual UserOperationClaim UserOperationClaim { get; set; }
+    public UserOperationClaim UserOperationClaim { get; set; }
 }
