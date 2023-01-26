@@ -16,7 +16,7 @@ public class AuthController: BaseApiController
     }
 
     [HttpPost("[action]")]
-    public async Task<IActionResult> Register(RegisterDto registerDto)
+    public async Task<IActionResult> Register([FromForm]RegisterDto registerDto)
     {
         return await HandleResult(_authService.Register(registerDto));
     }

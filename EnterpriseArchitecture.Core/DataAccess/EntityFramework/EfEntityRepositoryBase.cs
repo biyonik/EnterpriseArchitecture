@@ -13,6 +13,7 @@ public class EfEntityRepositoryBase<TEntity, TKey, TContext>: IEntityRepository<
         using var context = new TContext();
         var addedEntity = context.Entry<TEntity>(entity);
         addedEntity.State = EntityState.Added;
+        context.SaveChanges();
     }
 
     public void Update(TEntity entity)
@@ -20,6 +21,7 @@ public class EfEntityRepositoryBase<TEntity, TKey, TContext>: IEntityRepository<
         using var context = new TContext();
         var addedEntity = context.Entry<TEntity>(entity);
         addedEntity.State = EntityState.Modified;
+        context.SaveChanges();
     }
 
     public void Delete(TEntity entity)
@@ -27,6 +29,7 @@ public class EfEntityRepositoryBase<TEntity, TKey, TContext>: IEntityRepository<
         using var context = new TContext();
         var addedEntity = context.Entry<TEntity>(entity);
         addedEntity.State = EntityState.Deleted;
+        context.SaveChanges();
     }
 
     public ICollection<TEntity> GetAll(Expression<Func<TEntity, bool>>? filter)

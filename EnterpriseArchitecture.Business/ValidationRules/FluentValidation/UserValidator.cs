@@ -16,10 +16,6 @@ public class UserValidator: AbstractValidator<RegisterDto>
             .NotEmpty().WithMessage("Tam isim boş bırakılamaz!")
             .NotNull().WithMessage("Tam isim boş bırakılamaz!");
         
-        RuleFor(x => x.ImageUrl)
-            .NotEmpty().WithMessage("Kullanıcı resmi boş bırakılamaz!")
-            .NotNull().WithMessage("Kullanıcı resmi boş bırakılamaz!");
-
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("Parola boş bırakılamaz!")
             .NotNull().WithMessage("Parola boş bırakılamaz!")

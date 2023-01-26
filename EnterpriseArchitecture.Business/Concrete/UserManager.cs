@@ -1,4 +1,5 @@
 ﻿using EnterpriseArchitecture.Business.Abstract;
+using EnterpriseArchitecture.Core.Utilities.Hashing;
 using EnterpriseArchitecture.Core.Utilities.Result.Abstract;
 using EnterpriseArchitecture.Core.Utilities.Result.Concrete;
 using EnterpriseArchitecture.DataAccess.Abstract;
@@ -18,6 +19,19 @@ public class UserManager: IUserService
 
     public void Add(RegisterDto addUserDto)
     {
+        byte[] passwordHash, passwordSalt;
+        HashingHelper.CreatePassword(addUserDto.Password, out passwordHash, out passwordSalt);
+        User user = new User
+        {
+            Id = Guid.NewGuid(),
+            Email = addUserDto.Email,
+            Name = addUserDto.Name,
+            ImageUrl = "",
+            PasswordHash = passwordHash,
+            PasswordSalt = passwordSalt
+        };
+        
+        _userDal.Add(user);
     }
 
     public IDataResult<UserWithAllFields?> GetByEmail(string email)
