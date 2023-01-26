@@ -1,6 +1,7 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using EnterpriseArchitecture.Business.DependencyResolvers.Autofac;
+using EnterpriseArchitecture.DataAccess.Concrete.EntityFrameworkCore.Contexts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,7 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder => containerB
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddDbContext<AppDbContext>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
