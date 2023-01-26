@@ -22,9 +22,14 @@ public class AuthManager : IAuthService
     [ValidationAspect(typeof(UserValidator))]
     public IResult Register(RegisterDto registerDto)
     {
-        BusinessRule.Run(
+        IResult ruleResult = BusinessRule.Run(
             CheckIfEmailIsExist(registerDto.Email)
-        );
+        )!;
+
+        if (!ruleResult.IsSuccess)
+        {
+            return new ErrorResult(ruleResult.Message);
+        }
         
         _userService.Add(registerDto);
         return new SuccessResult("Kullanıcı kaydı başarıyla tamamlandı.");
