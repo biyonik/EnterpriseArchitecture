@@ -1,14 +1,12 @@
 ﻿using EnterpriseArchitecture.Business.Abstract;
 using EnterpriseArchitecture.Business.ValidationRules.FluentValidation;
-using EnterpriseArchitecture.Core.CrossCuttingConcerns.Validation;
+using EnterpriseArchitecture.Core.Aspects.Validation;
 using EnterpriseArchitecture.Core.Utilities.Business;
 using EnterpriseArchitecture.Core.Utilities.Hashing;
 using EnterpriseArchitecture.Core.Utilities.Result.Abstract;
 using EnterpriseArchitecture.Core.Utilities.Result.Concrete;
 using EnterpriseArchitecture.DataTransformationObjects.Concrete.Auth;
-using EnterpriseArchitecture.DataTransformationObjects.Concrete.User;
 using EnterpriseArchitecture.Entities.Concrete;
-using FluentValidation.Results;
 
 namespace EnterpriseArchitecture.Business.Concrete;
 
@@ -21,14 +19,11 @@ public class AuthManager : IAuthService
         _userService = userService;
     }
 
+    [ValidationAspect(typeof(UserValidator))]
     public IResult Register(RegisterDto registerDto)
     {
-        int imageSize = 2;
-        ValidationTool.Validate(new UserValidator(), registerDto);
-
-        IResult? result = BusinessRule.Run(
-            CheckIfEmailIsExist(registerDto.Email),
-            CheckIfImageSizeIsLessThanOneMegabytes(imageSize)
+        BusinessRule.Run(
+            CheckIfEmailIsExist(registerDto.Email)
         );
         
         _userService.Add(registerDto);
@@ -40,8 +35,9 @@ public class AuthManager : IAuthService
         IResult? ruleResult = BusinessRule.Run(
             CheckIfEmailIsExist(loginDto.Email)
         );
+        if (ruleResult.IsSuccess) return new ErrorDataResult<User>("Böyle bir kullanıcı bulunamadı!");
 
-        var userByEmail = _userService.GetByEmail(loginDto.Email);
+        var userByEmail = _userService.GetByEmail(loginDto.Email).Data;
 
         var result =
             HashingHelper.VerifyPasswordHash(loginDto.Password, userByEmail?.PasswordHash, userByEmail?.PasswordSalt);

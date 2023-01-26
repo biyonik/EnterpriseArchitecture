@@ -1,6 +1,7 @@
 ﻿using EnterpriseArchitecture.DataAccess.Concrete.EntityFrameworkCore.Configurations;
 using EnterpriseArchitecture.Entities.Concrete;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace EnterpriseArchitecture.DataAccess.Concrete.EntityFrameworkCore.Contexts;
 
@@ -12,8 +13,13 @@ public class AppDbContext: DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql(
-            "Server=127.0.0.1;Port=5433;Database=EnterpriseArchAppDb;User Id=postgres;Password=12345");
+        string? environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+        IConfigurationRoot configurationRoot = new ConfigurationBuilder()
+            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+            .AddJsonFile("appsettings.json", false)
+            .AddJsonFile($"appsettings.{environmentName}.json", false)
+            .Build();
+        optionsBuilder.UseNpgsql(configurationRoot.GetConnectionString("DefaultConnection"));
         base.OnConfiguring(optionsBuilder);
     }
 

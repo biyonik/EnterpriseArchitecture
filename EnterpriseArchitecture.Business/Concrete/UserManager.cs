@@ -1,7 +1,10 @@
 ﻿using EnterpriseArchitecture.Business.Abstract;
+using EnterpriseArchitecture.Core.Utilities.Result.Abstract;
+using EnterpriseArchitecture.Core.Utilities.Result.Concrete;
 using EnterpriseArchitecture.DataAccess.Abstract;
 using EnterpriseArchitecture.DataTransformationObjects.Concrete.Auth;
 using EnterpriseArchitecture.DataTransformationObjects.Concrete.User;
+using EnterpriseArchitecture.Entities.Concrete;
 
 namespace EnterpriseArchitecture.Business.Concrete;
 
@@ -15,14 +18,13 @@ public class UserManager: IUserService
 
     public void Add(RegisterDto addUserDto)
     {
-        throw new NotImplementedException();
     }
 
-    public UserWithAllFields? GetByEmail(string email)
+    public IDataResult<UserWithAllFields?> GetByEmail(string email)
     {
         var stringComparer = StringComparer.OrdinalIgnoreCase;
         var isExists = _userDal.Get(u => stringComparer.Compare(u.Email, email) == 0);
-        if (isExists == null) throw new Exception("User bulunamadı!");
+        if (isExists == null) return null;
         
         var dto = new UserWithAllFields
         {
@@ -33,7 +35,7 @@ public class UserManager: IUserService
             PasswordHash = isExists.PasswordHash,
             PasswordSalt = isExists.PasswordSalt
         };
-        return dto;
+        return new SuccessDataResult<UserWithAllFields?>(dto);
     }
 
     public List<UserWithIdDto> GetAllUsersWithId()
