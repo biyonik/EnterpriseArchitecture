@@ -26,7 +26,7 @@ public class FileManager: IFileService
             return fileName;
         }
 
-        throw new Exception("File not found!");
+        throw new Exception("File cannot be null!");
     }
 
     [Obsolete("Obsolete")]
@@ -46,7 +46,21 @@ public class FileManager: IFileService
             return fileName;
         }
         
-        throw new Exception("File not found!");
+        throw new Exception("File cannot be null!");
+    }
+
+    public (string content, byte[] fileBytes) FileConvertToByteForDatabase(IFormFile? file)
+    {
+        if (file != null)
+        {
+            using var memoryStream = new MemoryStream();
+            file.CopyTo(memoryStream);
+            var fileBytes = memoryStream.ToArray();
+            string readedContent = System.Convert.ToBase64String(fileBytes);
+            return (readedContent, fileBytes);
+        }
+
+        throw new Exception("File cannot be null!");
     }
 
     public string GetExtension(IFormFile? file)
@@ -57,7 +71,7 @@ public class FileManager: IFileService
             return fileInfo.Extension;  
         }
 
-        throw new Exception("File not found!");
+        throw new Exception("File cannot be null!");
     }
 
     public long GetSize(IFormFile? file)
@@ -68,7 +82,7 @@ public class FileManager: IFileService
             return fileInfo.Length;
         }
 
-        throw new Exception("File not found!");
+        throw new Exception("File cannot be null!");
     }
 
     public decimal Convert(IFormFile? file, decimal multiplier)
@@ -80,6 +94,6 @@ public class FileManager: IFileService
             return (decimal)convertedSize;
         }
 
-        throw new Exception("File not found!");
+        throw new Exception("File cannot be null!");
     }
 }
