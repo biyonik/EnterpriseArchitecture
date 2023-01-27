@@ -20,4 +20,8 @@
       <ProjectReference Include="..\EnterpriseArchitecture.Business\EnterpriseArchitecture.Business.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Content\Images" />
+    </ItemGroup>
+
 </Project>

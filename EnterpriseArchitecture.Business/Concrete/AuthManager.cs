@@ -7,6 +7,7 @@ using EnterpriseArchitecture.Core.Utilities.Result.Abstract;
 using EnterpriseArchitecture.Core.Utilities.Result.Concrete;
 using EnterpriseArchitecture.DataTransformationObjects.Concrete.Auth;
 using EnterpriseArchitecture.Entities.Concrete;
+using Microsoft.AspNetCore.Http;
 
 namespace EnterpriseArchitecture.Business.Concrete;
 
@@ -22,8 +23,11 @@ public class AuthManager : IAuthService
     [ValidationAspect(typeof(UserValidator))]
     public IResult Register(RegisterDto registerDto)
     {
+        
         IResult ruleResult = BusinessRule.Run(
-            CheckIfEmailIsExist(registerDto.Email)
+            CheckIfEmailIsExist(registerDto.Email),
+            CheckIfImageExtensionAllow(registerDto.ImageFile),
+            CheckIfImageSizeIsLessThanOneMegabytes(registerDto.ImageFile, registerDto.ImageFile.Length)
         )!;
 
         if (!ruleResult.IsSuccess)
@@ -64,10 +68,27 @@ public class AuthManager : IAuthService
         return isExist != null ? new SuccessResult() : new ErrorResult("Bu mail adresi daha önce kullanılmış!");
     }
 
-    private IResult CheckIfImageSizeIsLessThanOneMegabytes(int imageSize)
+    private IResult CheckIfImageSizeIsLessThanOneMegabytes(IFormFile image, long imageSize)
     {
-        return imageSize > 1
+        var convertedSize = Convert.ToDecimal(imageSize * 0.00001);
+        return convertedSize > 1
             ? new ErrorResult("Yüklediğiniz resim boyutu en fazla 1 MB olabilir.")
             : new SuccessResult();
+    }
+
+    private IResult CheckIfImageExtensionAllow(IFormFile image)
+    {
+        if (image != null)
+        {
+            string? fileName = image.Name;
+            string? ext = fileName?.Substring(fileName.LastIndexOf(".", StringComparison.Ordinal));
+            string? extension = ext?.ToLower();
+            List<string> allowedFileExtensions = new List<string> { ".jpg", ".jpeg", ".png" };
+            return extension != null && !allowedFileExtensions.Contains(extension)
+                ? new ErrorResult("Eklediğiniz resim formatı, uyumlu bir format değildi!")
+                : new SuccessResult();
+        }
+
+        return new ErrorResult("Dosya okunamadı!");
     }
 }
