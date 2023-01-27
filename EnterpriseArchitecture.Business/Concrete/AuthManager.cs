@@ -30,7 +30,7 @@ public class AuthManager : IAuthService
             CheckIfImageSizeIsLessThanOneMegabytes(registerDto.ImageFile, registerDto.ImageFile.Length)
         )!;
 
-        if (!ruleResult.IsSuccess)
+        if (ruleResult is { IsSuccess: false })
         {
             return new ErrorResult(ruleResult.Message);
         }
@@ -65,12 +65,12 @@ public class AuthManager : IAuthService
     private IResult CheckIfEmailIsExist(string email)
     {
         var isExist = _userService.GetByEmail(email);
-        return isExist != null ? new SuccessResult() : new ErrorResult("Bu mail adresi daha önce kullanılmış!");
+        return isExist != null ? new ErrorResult("Bu mail adresi daha önce kullanılmış!") : new SuccessResult();
     }
 
     private IResult CheckIfImageSizeIsLessThanOneMegabytes(IFormFile image, long imageSize)
     {
-        var convertedSize = Convert.ToDecimal(imageSize * 0.00001);
+        var convertedSize = Convert.ToDecimal(imageSize * 0.000001);
         return convertedSize > 1
             ? new ErrorResult("Yüklediğiniz resim boyutu en fazla 1 MB olabilir.")
             : new SuccessResult();
@@ -80,8 +80,8 @@ public class AuthManager : IAuthService
     {
         if (image != null)
         {
-            string? fileName = image.Name;
-            string? ext = fileName?.Substring(fileName.LastIndexOf(".", StringComparison.Ordinal));
+            FileInfo fileInfo = new FileInfo(image.FileName);
+            string? ext = fileInfo.Extension;
             string? extension = ext?.ToLower();
             List<string> allowedFileExtensions = new List<string> { ".jpg", ".jpeg", ".png" };
             return extension != null && !allowedFileExtensions.Contains(extension)

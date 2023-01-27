@@ -19,6 +19,14 @@ public class UserManager: IUserService
 
     public void Add(RegisterDto addUserDto)
     {
+        FileInfo fileInfo = new FileInfo(addUserDto.ImageFile.FileName);
+        string fileName = Guid.NewGuid().ToString();
+        string fileFormat = fileInfo.Extension;
+        fileName = $"{fileName}.{fileFormat}";
+        string path = Path.Combine(Directory.GetCurrentDirectory(), "Content", "Images", fileName);
+        using var stream = File.Create(path);
+        addUserDto.ImageFile?.CopyTo(stream);
+        
         byte[] passwordHash, passwordSalt;
         HashingHelper.CreatePassword(addUserDto.Password, out passwordHash, out passwordSalt);
         User user = new User
@@ -26,7 +34,7 @@ public class UserManager: IUserService
             Id = Guid.NewGuid(),
             Email = addUserDto.Email,
             Name = addUserDto.Name,
-            ImageUrl = "",
+            ImageUrl = fileName,
             PasswordHash = passwordHash,
             PasswordSalt = passwordSalt
         };
