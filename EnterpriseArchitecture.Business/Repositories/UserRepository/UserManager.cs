@@ -19,12 +19,15 @@ public class UserManager: IUserService
         _fileService = fileService;
     }
 
-    public void Add(RegisterDto addUserDto)
+    public IResult Add(RegisterDto addUserDto)
     {
         string fileName = _fileService.Save(addUserDto.ImageFile, "Content", "Images");
         var user = CreateUser(addUserDto, fileName);
 
-        _userDal.Add(user);
+        var result = _userDal.Add(user);
+        return result
+            ? new SuccessResult("Kullanıcı kayıt işlemi başarılı.")
+            : new ErrorResult("Kullanıcı kayıt işlemi başarısız!");
     }
 
     private static User CreateUser(RegisterDto addUserDto, string fileName)
@@ -61,17 +64,50 @@ public class UserManager: IUserService
         return new SuccessDataResult<UserWithAllFields?>(dto);
     }
 
-    public List<UserWithIdDto> GetAllUsersWithId()
+    public IDataResult<List<UserWithIdDto>> GetAllUsersWithId()
     {
-        throw new NotImplementedException();
+        var result = new List<UserWithIdDto>();
+        var users = _userDal.GetAll();
+        foreach (var user in users)
+        {
+            var userDto = new UserWithIdDto
+            {
+                Id = user.Id,
+                Email = user.Email,
+                Name = user.Name,
+                ImageUrl = user.ImageUrl
+            };
+            result.Add(userDto);
+        }
+
+        return result.Count > 0
+            ? new SuccessDataResult<List<UserWithIdDto>>(result)
+            : new ErrorDataResult<List<UserWithIdDto>>(
+                "Sistemde kayıtlı herhangi bir kullanıcı olmadığı için kayıt getirilemedi");
     }
 
-    public List<UserDto> GetAllUsers()
+    public IDataResult<List<UserDto>> GetAllUsers()
     {
-        throw new NotImplementedException();
+        var result = new List<UserDto>();
+        var users = _userDal.GetAll();
+        foreach (var user in users)
+        {
+            var userDto = new UserDto
+            {
+                Email = user.Email,
+                Name = user.Name,
+                ImageUrl = user.ImageUrl
+            };
+            result.Add(userDto);
+        }
+
+        return result.Count > 0
+            ? new SuccessDataResult<List<UserDto>>(result)
+            : new ErrorDataResult<List<UserDto>>(
+                "Sistemde kayıtlı herhangi bir kullanıcı olmadığı için kayıt getirilemedi");
     }
     
-    public UserDto FindById(Guid id)
+    public IDataResult<UserDto> FindById(Guid id)
     {
         var user = _userDal.GetById(id);
         if (user == null) throw new Exception("User bulunamadı!");
@@ -81,16 +117,29 @@ public class UserManager: IUserService
             Email = user.Email,
             ImageUrl = user.ImageUrl
         };
-        return userDto;
+        return new SuccessDataResult<UserDto>(userDto);
     }
 
-    public void RemoveById(Guid id)
+    public IResult RemoveById(Guid id)
     {
-        throw new NotImplementedException();
+        var user = _userDal.GetById(id);
+        var result = _userDal.Delete(user!);
+        return result
+            ? new SuccessResult("Kullanıcı silme işlemi başarılı.")
+            : new ErrorResult("Kullanıcı silme işlemi başarısız!");
     }
 
-    public void Update(UpdateUserDto updateUserDto)
+    public IResult Update(UpdateUserDto updateUserDto)
     {
-        throw new NotImplementedException();
+        var user = new User
+        {
+            Email = updateUserDto.Email,
+            Name = updateUserDto.Name,
+            ImageUrl = updateUserDto.ImageUrl
+        };
+        var result = _userDal.Update(user);
+        return result
+            ? new SuccessResult("Kullanıcı bilgileri güncelleme işlemi başarılı.")
+            : new ErrorResult("Kullanıcı bilgilerini güncelleme işlemi başarısız!");
     }
 }

@@ -8,28 +8,28 @@ public class EfEntityRepositoryBase<TEntity, TKey, TContext>: IEntityRepository<
     where TContext : DbContext, new() 
     where TEntity : class, IEntityWithId<TKey>, IEntity, new()
 {
-    public void Add(TEntity entity)
+    public bool Add(TEntity entity)
     {
         using var context = new TContext();
         var addedEntity = context.Entry<TEntity>(entity);
         addedEntity.State = EntityState.Added;
-        context.SaveChanges();
+        return context.SaveChanges() > 0;
     }
 
-    public void Update(TEntity entity)
+    public bool Update(TEntity entity)
     {
         using var context = new TContext();
         var addedEntity = context.Entry<TEntity>(entity);
         addedEntity.State = EntityState.Modified;
-        context.SaveChanges();
+        return context.SaveChanges() > 0;
     }
 
-    public void Delete(TEntity entity)
+    public bool Delete(TEntity entity)
     {
         using var context = new TContext();
         var addedEntity = context.Entry<TEntity>(entity);
         addedEntity.State = EntityState.Deleted;
-        context.SaveChanges();
+        return context.SaveChanges() > 0;
     }
 
     public ICollection<TEntity> GetAll(Expression<Func<TEntity, bool>>? filter)

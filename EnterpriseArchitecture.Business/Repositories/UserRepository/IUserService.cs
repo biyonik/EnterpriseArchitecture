@@ -6,11 +6,11 @@ namespace EnterpriseArchitecture.Business.Repositories.UserRepository;
 
 public interface IUserService
 {
-    void Add(RegisterDto registerDto);
+    IResult Add(RegisterDto registerDto);
     IDataResult<UserWithAllFields?> GetByEmail(string email); 
-    List<UserWithIdDto> GetAllUsersWithId();
-    List<UserDto> GetAllUsers();
-    UserDto FindById(Guid id);
-    void RemoveById(Guid id);
-    void Update(UpdateUserDto updateUserDto);
+    IDataResult<List<UserWithIdDto>> GetAllUsersWithId();
+    IDataResult<List<UserDto>> GetAllUsers();
+    IDataResult<UserDto> FindById(Guid id);
+    IResult RemoveById(Guid id);
+    IResult Update(UpdateUserDto updateUserDto);
 }
