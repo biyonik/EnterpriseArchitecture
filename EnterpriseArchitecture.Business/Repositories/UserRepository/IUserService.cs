@@ -2,7 +2,7 @@
 using EnterpriseArchitecture.DataTransformationObjects.Concrete.Auth;
 using EnterpriseArchitecture.DataTransformationObjects.Concrete.User;
 
-namespace EnterpriseArchitecture.Business.Abstract;
+namespace EnterpriseArchitecture.Business.Repositories.UserRepository;
 
 public interface IUserService
 {

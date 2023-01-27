@@ -1,8 +1,7 @@
 ﻿using System.Net;
-using EnterpriseArchitecture.Business.Abstract;
 using Microsoft.AspNetCore.Http;
 
-namespace EnterpriseArchitecture.Business.Concrete;
+namespace EnterpriseArchitecture.Business.Repositories.Utilities;
 
 public class FileManager: IFileService
 {

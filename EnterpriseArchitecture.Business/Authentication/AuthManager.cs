@@ -1,5 +1,5 @@
-﻿using EnterpriseArchitecture.Business.Abstract;
-using EnterpriseArchitecture.Business.ValidationRules.FluentValidation;
+﻿using EnterpriseArchitecture.Business.Repositories.UserRepository;
+using EnterpriseArchitecture.Business.Repositories.UserRepository.Validation.FluentValidation;
 using EnterpriseArchitecture.Core.Aspects.Validation;
 using EnterpriseArchitecture.Core.Utilities.Business;
 using EnterpriseArchitecture.Core.Utilities.Hashing;
@@ -9,7 +9,7 @@ using EnterpriseArchitecture.DataTransformationObjects.Concrete.Auth;
 using EnterpriseArchitecture.Entities.Concrete;
 using Microsoft.AspNetCore.Http;
 
-namespace EnterpriseArchitecture.Business.Concrete;
+namespace EnterpriseArchitecture.Business.Authentication;
 
 public class AuthManager : IAuthService
 {

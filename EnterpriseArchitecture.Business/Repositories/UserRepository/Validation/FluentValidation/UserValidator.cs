@@ -1,7 +1,7 @@
 ﻿using EnterpriseArchitecture.DataTransformationObjects.Concrete.Auth;
 using FluentValidation;
 
-namespace EnterpriseArchitecture.Business.ValidationRules.FluentValidation;
+namespace EnterpriseArchitecture.Business.Repositories.UserRepository.Validation.FluentValidation;
 
 public class UserValidator: AbstractValidator<RegisterDto>
 {

@@ -3,7 +3,7 @@ using EnterpriseArchitecture.Entities.Concrete;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace EnterpriseArchitecture.DataAccess.Concrete.EntityFrameworkCore.Contexts;
+namespace EnterpriseArchitecture.DataAccess.Context.EntityFrameworkCore;
 
 public class AppDbContext: DbContext
 {

@@ -1,4 +1,4 @@
-﻿using EnterpriseArchitecture.Business.Abstract;
+﻿using EnterpriseArchitecture.Business.Authentication;
 using EnterpriseArchitecture.Core.Utilities.Result.Abstract;
 using EnterpriseArchitecture.DataTransformationObjects.Concrete.Auth;
 using EnterpriseArchitecture.Entities.Concrete;

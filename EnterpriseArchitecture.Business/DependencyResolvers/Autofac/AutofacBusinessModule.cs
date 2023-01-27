@@ -1,11 +1,16 @@
 ﻿using Autofac;
 using Autofac.Extras.DynamicProxy;
 using Castle.DynamicProxy;
-using EnterpriseArchitecture.Business.Abstract;
-using EnterpriseArchitecture.Business.Concrete;
+using EnterpriseArchitecture.Business.Authentication;
+using EnterpriseArchitecture.Business.Repositories.OperationClaimRepository;
+using EnterpriseArchitecture.Business.Repositories.UserOperationClaimRepository;
+using EnterpriseArchitecture.Business.Repositories.UserRepository;
+using EnterpriseArchitecture.Business.Repositories.Utilities;
 using EnterpriseArchitecture.Core.Utilities.Interceptors;
-using EnterpriseArchitecture.DataAccess.Abstract;
 using EnterpriseArchitecture.DataAccess.Concrete.EntityFrameworkCore;
+using EnterpriseArchitecture.DataAccess.Repositories.OperationClaimRepository;
+using EnterpriseArchitecture.DataAccess.Repositories.UserOperationClaimRepository;
+using EnterpriseArchitecture.DataAccess.Repositories.UserRepository;
 
 namespace EnterpriseArchitecture.Business.DependencyResolvers.Autofac;
 

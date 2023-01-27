@@ -23,4 +23,8 @@
       <ProjectReference Include="..\EnterpriseArchitecture.DataTransformationObjects\EnterpriseArchitecture.DataTransformationObjects.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Repositories\UserRepository\Validation" />
+    </ItemGroup>
+
 </Project>

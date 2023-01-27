@@ -1,7 +1,6 @@
-﻿using EnterpriseArchitecture.Business.Abstract;
-using EnterpriseArchitecture.DataAccess.Abstract;
+﻿using EnterpriseArchitecture.DataAccess.Repositories.UserOperationClaimRepository;
 
-namespace EnterpriseArchitecture.Business.Concrete;
+namespace EnterpriseArchitecture.Business.Repositories.UserOperationClaimRepository;
 
 public class UserOperationClaimManager: IUserOperationClaimService
 {

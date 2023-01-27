@@ -1,13 +1,13 @@
-﻿using EnterpriseArchitecture.Business.Abstract;
+﻿using EnterpriseArchitecture.Business.Repositories.Utilities;
 using EnterpriseArchitecture.Core.Utilities.Hashing;
 using EnterpriseArchitecture.Core.Utilities.Result.Abstract;
 using EnterpriseArchitecture.Core.Utilities.Result.Concrete;
-using EnterpriseArchitecture.DataAccess.Abstract;
+using EnterpriseArchitecture.DataAccess.Repositories.UserRepository;
 using EnterpriseArchitecture.DataTransformationObjects.Concrete.Auth;
 using EnterpriseArchitecture.DataTransformationObjects.Concrete.User;
 using EnterpriseArchitecture.Entities.Concrete;
 
-namespace EnterpriseArchitecture.Business.Concrete;
+namespace EnterpriseArchitecture.Business.Repositories.UserRepository;
 
 public class UserManager: IUserService
 {

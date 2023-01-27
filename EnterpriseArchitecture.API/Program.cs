@@ -1,7 +1,7 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using EnterpriseArchitecture.Business.DependencyResolvers.Autofac;
-using EnterpriseArchitecture.DataAccess.Concrete.EntityFrameworkCore.Contexts;
+using EnterpriseArchitecture.DataAccess.Context.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
