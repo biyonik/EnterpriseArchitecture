@@ -12,21 +12,23 @@ namespace EnterpriseArchitecture.Business.Concrete;
 public class UserManager: IUserService
 {
     private readonly IUserDal _userDal;
-    public UserManager(IUserDal userDal)
+    private readonly IFileService _fileService;
+    public UserManager(IUserDal userDal, IFileService fileService)
     {
         _userDal = userDal;
+        _fileService = fileService;
     }
 
     public void Add(RegisterDto addUserDto)
     {
-        FileInfo fileInfo = new FileInfo(addUserDto.ImageFile.FileName);
-        string fileName = Guid.NewGuid().ToString();
-        string fileFormat = fileInfo.Extension;
-        fileName = $"{fileName}.{fileFormat}";
-        string path = Path.Combine(Directory.GetCurrentDirectory(), "Content", "Images", fileName);
-        using var stream = File.Create(path);
-        addUserDto.ImageFile?.CopyTo(stream);
-        
+        string fileName = _fileService.Save(addUserDto.ImageFile, "Content", "Images");
+        var user = CreateUser(addUserDto, fileName);
+
+        _userDal.Add(user);
+    }
+
+    private static User CreateUser(RegisterDto addUserDto, string fileName)
+    {
         byte[] passwordHash, passwordSalt;
         HashingHelper.CreatePassword(addUserDto.Password, out passwordHash, out passwordSalt);
         User user = new User
@@ -38,8 +40,7 @@ public class UserManager: IUserService
             PasswordHash = passwordHash,
             PasswordSalt = passwordSalt
         };
-        
-        _userDal.Add(user);
+        return user;
     }
 
     public IDataResult<UserWithAllFields?> GetByEmail(string email)

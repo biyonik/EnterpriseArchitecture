@@ -21,6 +21,7 @@ public class AutofacBusinessModule : Module
 
         builder.RegisterType<OperationClaimManager>().As<IOperationClaimService>();
         builder.RegisterType<AuthManager>().As<IAuthService>();
+        builder.RegisterType<FileManager>().As<IFileService>();
 
         var assembly = System.Reflection.Assembly.GetExecutingAssembly();
         builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces().EnableInterfaceInterceptors(
