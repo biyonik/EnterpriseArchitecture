@@ -1,4 +1,5 @@
-﻿using EnterpriseArchitecture.Business.Abstract;
+﻿using System.Net;
+using EnterpriseArchitecture.Business.Abstract;
 using Microsoft.AspNetCore.Http;
 
 namespace EnterpriseArchitecture.Business.Concrete;
@@ -25,6 +26,26 @@ public class FileManager: IFileService
             return fileName;
         }
 
+        throw new Exception("File not found!");
+    }
+
+    [Obsolete("Obsolete")]
+    public string SaveToFtp(IFormFile? file)
+    {
+        if (file != null)
+        {
+            FileInfo fileInfo = new FileInfo(file.FileName);
+            string fileName = Guid.NewGuid().ToString();
+            string fileFormat = fileInfo.Extension;
+            fileName = $"{fileName}{fileFormat}";
+            FtpWebRequest? ftpWebRequest = WebRequest.Create($"Ftp Adresi + {file.FileName}") as FtpWebRequest;
+            ftpWebRequest.Credentials = new NetworkCredential("Username", "Password");
+            ftpWebRequest.Method = WebRequestMethods.Ftp.UploadFile;
+            using Stream ftpStream = ftpWebRequest.GetRequestStream();
+            file.CopyTo(ftpStream);
+            return fileName;
+        }
+        
         throw new Exception("File not found!");
     }
 
