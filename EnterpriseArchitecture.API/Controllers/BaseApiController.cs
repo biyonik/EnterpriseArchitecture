@@ -1,4 +1,5 @@
 ﻿using EnterpriseArchitecture.Core.Utilities.Result.Abstract;
+using EnterpriseArchitecture.Core.Utilities.Result.Concrete;
 using Microsoft.AspNetCore.Mvc;
 using IResult = EnterpriseArchitecture.Core.Utilities.Result.Abstract.IResult;
 
@@ -10,7 +11,7 @@ namespace EnterpriseArchitecture.API.Controllers;
 public class BaseApiController: ControllerBase
 {
     [NonAction]
-    public async Task<IActionResult> HandleResult(IResult? result)
+    protected async Task<IActionResult> HandleResult(IResult? result)
     {
         if (result == null) return await Task.FromResult<IActionResult>(BadRequest());
 
@@ -20,13 +21,12 @@ public class BaseApiController: ControllerBase
     }
 
     [NonAction]
-    public async Task<IActionResult> HandleResult<T>(IDataResult<T>? result)
+    protected async Task<IActionResult> HandleResult<T>(IDataResult<T>? result)
     {
         if (result == null) return await Task.FromResult<IActionResult>(BadRequest());
 
         if (!result.IsSuccess && result.Data == null) return NotFound(result.Message);
         
-        (string message, T data) res = (result.Message, result.Data);
-        return Ok(res);
+        return Ok(result);
     }
 }

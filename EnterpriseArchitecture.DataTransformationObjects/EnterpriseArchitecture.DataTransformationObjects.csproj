@@ -12,4 +12,8 @@
       </Reference>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\EnterpriseArchitecture.Entities\EnterpriseArchitecture.Entities.csproj" />
+    </ItemGroup>
+
 </Project>

@@ -1,5 +1,4 @@
 ﻿using EnterpriseArchitecture.Business.Authentication;
-using EnterpriseArchitecture.Core.Utilities.Result.Abstract;
 using EnterpriseArchitecture.DataTransformationObjects.Concrete.Auth;
 using EnterpriseArchitecture.Entities.Concrete;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +25,4 @@ public class AuthController: BaseApiController
     {
         return await HandleResult<User>(_authService.Login(loginDto));
     }
-
-
 }

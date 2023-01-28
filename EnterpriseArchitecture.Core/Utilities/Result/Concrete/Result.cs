@@ -15,4 +15,8 @@ public class Result: IResult
     {
         Message = message;
     }
+
+    protected Result()
+    {
+    }
 }

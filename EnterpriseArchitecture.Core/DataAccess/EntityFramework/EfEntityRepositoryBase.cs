@@ -43,7 +43,7 @@ public class EfEntityRepositoryBase<TEntity, TKey, TContext>: IEntityRepository<
     public TEntity? GetById(TKey id)
     {
         using var context = new TContext();
-        return context.Set<TEntity>().FirstOrDefault(x => x.Equals(id));
+        return context.Set<TEntity>().Find(id);
     }
 
     public TEntity Get(Expression<Func<TEntity, bool>> filter)
