@@ -2,7 +2,9 @@
 
 namespace EnterpriseArchitecture.DataTransformationObjects.Concrete.User;
 
-public class UserForListWithOnlyIdDto: UserForListDto, IDtoWithId<Guid>
+public sealed class UserForChangePasswordDto: IDtoWithId<Guid>
 {
     public Guid Id { get; set; }
+    public string CurrentPassword { get; set; }
+    public string NewPassword { get; set; }
 }

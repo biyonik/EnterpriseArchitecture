@@ -2,7 +2,7 @@
 
 namespace EnterpriseArchitecture.DataTransformationObjects.Concrete.User;
 
-public class UpdateUserDto: IDtoWithId<Guid>
+public class UserForUpdateDto: IDtoWithId<Guid>
 {
     public Guid Id { get; set; }
     public string Name { get; set; }

@@ -2,7 +2,7 @@
 
 namespace EnterpriseArchitecture.DataTransformationObjects.Concrete.User;
 
-public class UserDto: IDto
+public class UserForListDto: IDto
 {
     public string Name { get; set; }
     public string Email { get; set; }
