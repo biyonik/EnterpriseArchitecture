@@ -1,11 +1,12 @@
-﻿using EnterpriseArchitecture.Entities.Concrete;
+﻿using EnterpriseArchitecture.DataTransformationObjects.Concrete.OperationClaim;
+using EnterpriseArchitecture.Entities.Concrete;
 using FluentValidation;
 
 namespace EnterpriseArchitecture.Business.Repositories.OperationClaimRepository.Validation.FluentValidation;
 
-public class OperationClaimValidator: AbstractValidator<OperationClaim>
+public class OperationClaimForAddValidator: AbstractValidator<OperationClaimForAddDto>
 {
-    public OperationClaimValidator()
+    public OperationClaimForAddValidator()
     {
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Yetki adı boş bırakılamaz!")

@@ -11,4 +11,5 @@ public interface IFileService
     string GetExtension(IFormFile? file);
     long GetSize(IFormFile? file);
     decimal Convert(IFormFile? file, decimal multiplier);
+    void Delete(string fileName, params string[] path);
 }

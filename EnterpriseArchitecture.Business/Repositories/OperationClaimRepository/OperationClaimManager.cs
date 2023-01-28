@@ -18,7 +18,7 @@ public class OperationClaimManager: IOperationClaimService
         _operationClaimDal = operationClaimDal;
     }
 
-    [ValidationAspect(typeof(OperationClaimValidator))]
+    [ValidationAspect(typeof(OperationClaimForAddValidator))]
     public IResult Add(OperationClaimForAddDto operationClaimForAddDto)
     {
         var operationClaim = new OperationClaim
@@ -32,7 +32,7 @@ public class OperationClaimManager: IOperationClaimService
             : new ErrorResult(OperationClaimMessage.AddnewOperationClaimFailed);
     }
 
-    [ValidationAspect(typeof(OperationClaimValidator))]
+    [ValidationAspect(typeof(OperationClaimForUpdateValidator))]
     public IResult Update(OperationClaimForUpdateDto operationClaimForUpdateDto)
     {
         var operationClaim = new OperationClaim

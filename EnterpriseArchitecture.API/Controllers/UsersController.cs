@@ -29,13 +29,13 @@ public class UsersController: BaseApiController
     }
 
     [HttpPost]
-    public async Task<IActionResult> Add(RegisterDto registerDto)
+    public async Task<IActionResult> Add([FromForm]RegisterDto registerDto)
     {
         return await HandleResult(_userService.Add(registerDto));
     }
 
     [HttpPut]
-    public async Task<IActionResult> Update(UserForUpdateDto userForUpdateDto)
+    public async Task<IActionResult> Update([FromForm]UserForUpdateDto userForUpdateDto)
     {
         return await HandleResult(_userService.Update(userForUpdateDto));
     }

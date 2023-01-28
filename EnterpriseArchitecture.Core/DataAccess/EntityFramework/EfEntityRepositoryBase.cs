@@ -19,16 +19,14 @@ public class EfEntityRepositoryBase<TEntity, TKey, TContext>: IEntityRepository<
     public bool Update(TEntity entity)
     {
         using var context = new TContext();
-        var addedEntity = context.Entry<TEntity>(entity);
-        addedEntity.State = EntityState.Modified;
+        var updatedEntity = context.Set<TEntity>().Update(entity);
         return context.SaveChanges() > 0;
     }
 
     public bool Delete(TEntity entity)
     {
         using var context = new TContext();
-        var addedEntity = context.Entry<TEntity>(entity);
-        addedEntity.State = EntityState.Deleted;
+        var addedEntity = context.Set<TEntity>().Remove(entity);
         return context.SaveChanges() > 0;
     }
 
@@ -36,8 +34,8 @@ public class EfEntityRepositoryBase<TEntity, TKey, TContext>: IEntityRepository<
     {
         using var context = new TContext();
         return filter == null
-            ? context.Set<TEntity>().ToList()
-            : context.Set<TEntity>().Where(filter).ToList();
+            ? context.Set<TEntity>().AsNoTracking().ToList()
+            : context.Set<TEntity>().AsNoTracking().Where(filter).ToList();
     }
 
     public TEntity? GetById(TKey id)
@@ -46,9 +44,9 @@ public class EfEntityRepositoryBase<TEntity, TKey, TContext>: IEntityRepository<
         return context.Set<TEntity>().Find(id);
     }
 
-    public TEntity Get(Expression<Func<TEntity, bool>> filter)
+    public TEntity? Get(Expression<Func<TEntity?, bool>> filter)
     {
         using var context = new TContext();
-        return context.Set<TEntity>().SingleOrDefault(filter);
+        return context.Set<TEntity>().AsNoTracking().SingleOrDefault(filter);
     }
 }

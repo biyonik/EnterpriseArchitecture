@@ -95,4 +95,20 @@ public class FileManager: IFileService
 
         throw new Exception("File cannot be null!");
     }
+
+    public void Delete(string fileName, params string[] path)
+    {
+        string combinedPath = Path.Combine(Directory.GetCurrentDirectory(), string.Join('/', path), fileName);
+        try
+        {
+            if (File.Exists(combinedPath))
+            {
+                File.Delete(combinedPath);
+            }
+        }
+        catch (IOException ex)
+        {
+            throw ex;
+        }
+    }
 }

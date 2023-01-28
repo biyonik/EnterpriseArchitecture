@@ -9,5 +9,5 @@ public interface IEntityRepository<TEntity, in TKey>
     bool Delete(TEntity entity);
     ICollection<TEntity> GetAll(Expression<Func<TEntity, bool>>? filter = null);
     TEntity? GetById(TKey id);
-    TEntity Get(Expression<Func<TEntity, bool>> filter);
+    TEntity? Get(Expression<Func<TEntity?, bool>> filter);
 }

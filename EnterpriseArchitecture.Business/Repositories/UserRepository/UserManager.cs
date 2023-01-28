@@ -1,7 +1,9 @@
-﻿using EnterpriseArchitecture.Business.Repositories.UserRepository.Constants;
+﻿using EnterpriseArchitecture.Business.Authentication.Constants;
+using EnterpriseArchitecture.Business.Repositories.UserRepository.Constants;
 using EnterpriseArchitecture.Business.Repositories.UserRepository.Validation.FluentValidation;
 using EnterpriseArchitecture.Business.Repositories.Utilities;
 using EnterpriseArchitecture.Core.Aspects.Validation;
+using EnterpriseArchitecture.Core.Utilities.Business;
 using EnterpriseArchitecture.Core.Utilities.Hashing;
 using EnterpriseArchitecture.Core.Utilities.Result.Abstract;
 using EnterpriseArchitecture.Core.Utilities.Result.Concrete;
@@ -9,6 +11,7 @@ using EnterpriseArchitecture.DataAccess.Repositories.UserRepository;
 using EnterpriseArchitecture.DataTransformationObjects.Concrete.Auth;
 using EnterpriseArchitecture.DataTransformationObjects.Concrete.User;
 using EnterpriseArchitecture.Entities.Concrete;
+using Microsoft.AspNetCore.Http;
 
 namespace EnterpriseArchitecture.Business.Repositories.UserRepository;
 
@@ -112,7 +115,7 @@ public class UserManager : IUserService
     public IDataResult<UserForListDto> FindById(Guid id)
     {
         var user = _userDal.GetById(id);
-        if (user == null) throw new Exception(UserMessages.UserNotFound);
+        if (user == null) return new ErrorDataResult<UserForListDto>(UserMessages.UserNotFound);
         var userDto = new UserForListDto
         {
             Name = user.Name,
@@ -125,6 +128,11 @@ public class UserManager : IUserService
     public IResult RemoveById(Guid id)
     {
         var user = _userDal.GetById(id);
+        if (user == null) return new ErrorResult(UserMessages.UserNotFound);
+        if (!string.IsNullOrEmpty(user.ImageUrl))
+        {
+            _fileService.Delete(user.ImageUrl, "Content", "Images");
+        }
         var result = _userDal.Delete(user!);
         return result
             ? new SuccessResult(UserMessages.DeleteUserSuccess)
@@ -134,18 +142,43 @@ public class UserManager : IUserService
     [ValidationAspect(typeof(UserValidator))]
     public IResult Update(UserForUpdateDto userForUpdateDto)
     {
-        var user = new User
+        var user = _userDal.GetById(userForUpdateDto.Id);
+        if (user == null) return new ErrorResult(UserMessages.UserNotFound);
+        
+        var newUser = new User
         {
+            Id = userForUpdateDto.Id,
             Email = userForUpdateDto.Email,
             Name = userForUpdateDto.Name,
-            ImageUrl = userForUpdateDto.ImageUrl
+            PasswordHash = user.PasswordHash,
+            PasswordSalt = user.PasswordSalt,
+            UserOperationClaim = user.UserOperationClaim
         };
-        var result = _userDal.Update(user);
+        if (userForUpdateDto.Image != null)
+        {
+            IResult ruleResult = BusinessRule.Run(
+                CheckIfImageExtensionAllow(userForUpdateDto.Image),
+                CheckIfImageSizeIsLessThanOneMegabytes(userForUpdateDto.Image, userForUpdateDto.Image.Length)
+            )!;
+
+            if (ruleResult is { IsSuccess: false })
+            {
+                return new ErrorResult(ruleResult.Message);
+            }
+
+            if (!string.IsNullOrEmpty(user.ImageUrl)) _fileService.Delete(user.ImageUrl, "Content", "Images");
+            
+            string fileName = _fileService.Save(userForUpdateDto.Image, "Content", "Images");
+            newUser.ImageUrl = fileName;
+        }
+        
+        var result = _userDal.Update(newUser);
         return result
             ? new SuccessResult(UserMessages.UpdateUserSuccess)
             : new ErrorResult(UserMessages.UpdateUserFailed);
     }
 
+    [ValidationAspect(typeof(ChangePasswordValidator))]
     public IResult ChangePassword(UserForChangePasswordDto userForChangePasswordDto)
     {
         User? user = _userDal.Get(x => x.Id == userForChangePasswordDto.Id);
@@ -165,5 +198,29 @@ public class UserManager : IUserService
         return updateResult
             ? new SuccessResult(UserMessages.PasswordChangeSuccess)
             : new ErrorResult(UserMessages.PasswordChangeFail);
+    }
+    
+    private IResult CheckIfImageSizeIsLessThanOneMegabytes(IFormFile image, long imageSize)
+    {
+        var convertedSize = Convert.ToDecimal(imageSize * 0.000001);
+        return convertedSize > 1
+            ? new ErrorResult(AuthMessages.ImageSizeLimitError("1", "MB"))
+            : new SuccessResult();
+    }
+
+    private IResult CheckIfImageExtensionAllow(IFormFile image)
+    {
+        if (image != null)
+        {
+            FileInfo fileInfo = new FileInfo(image.FileName);
+            string? ext = fileInfo.Extension;
+            string? extension = ext?.ToLower();
+            List<string> allowedFileExtensions = new List<string> { ".jpg", ".jpeg", ".png" };
+            return extension != null && !allowedFileExtensions.Contains(extension)
+                ? new ErrorResult(AuthMessages.WrongFileFormat)
+                : new SuccessResult();
+        }
+
+        return new ErrorResult(AuthMessages.FileNotReaded);
     }
 }
