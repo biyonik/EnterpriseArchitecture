@@ -1,6 +1,7 @@
 ﻿using EnterpriseArchitecture.Business.Repositories.OperationClaimRepository.Constants;
 using EnterpriseArchitecture.Business.Repositories.OperationClaimRepository.Validation.FluentValidation;
 using EnterpriseArchitecture.Core.Aspects.Validation;
+using EnterpriseArchitecture.Core.Utilities.Business;
 using EnterpriseArchitecture.Core.Utilities.Result.Abstract;
 using EnterpriseArchitecture.Core.Utilities.Result.Concrete;
 using EnterpriseArchitecture.DataAccess.Repositories.OperationClaimRepository;
@@ -21,6 +22,15 @@ public class OperationClaimManager: IOperationClaimService
     [ValidationAspect(typeof(OperationClaimForAddValidator))]
     public IResult Add(OperationClaimForAddDto operationClaimForAddDto)
     {
+        IResult? businessRuleResult = BusinessRule.Run(
+            IsNameAvailable(operationClaimForAddDto.Name)
+        );
+        
+        if (businessRuleResult is { IsSuccess: false })
+        {
+            return new ErrorResult(businessRuleResult.Message);
+        }
+        
         var operationClaim = new OperationClaim
         {
             Id = Guid.NewGuid(),
@@ -58,15 +68,16 @@ public class OperationClaimManager: IOperationClaimService
 
     public IDataResult<OperationClaimForListDto> GetById(Guid Id)
     {
-        var operationClaim = _operationClaimDal.GetById(Id);
+        OperationClaim? operationClaim = _operationClaimDal.GetById(Id);
+        if (operationClaim == null)
+            return new ErrorDataResult<OperationClaimForListDto>(OperationClaimMessage.OperationClaimNotFound);
+        
         var operationClaimForListDto = new OperationClaimForListDto
         {
             Id = operationClaim.Id,
             Name = operationClaim.Name
         };
-        return operationClaim != null
-            ? new SuccessDataResult<OperationClaimForListDto>(operationClaimForListDto)
-            : new ErrorDataResult<OperationClaimForListDto>(OperationClaimMessage.OperationClaimNotFound);
+        return new SuccessDataResult<OperationClaimForListDto>(operationClaimForListDto);
     }
 
     public IDataResult<List<OperationClaimForListDto>> GetAll()
@@ -87,5 +98,12 @@ public class OperationClaimManager: IOperationClaimService
         }
 
         return new SuccessDataResult<List<OperationClaimForListDto>>(operationClaimsForListDtos);
+    }
+
+    private IResult IsNameAvailable(string name)
+    {
+        OperationClaim? result = _operationClaimDal.Get(p => p.Name == name);
+        if (result != null) return new ErrorResult(OperationClaimMessage.NameAlreadyExist);
+        return new SuccessResult();
     }
 }

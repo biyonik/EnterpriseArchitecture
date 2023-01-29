@@ -1,6 +1,7 @@
 ﻿using EnterpriseArchitecture.Business.Repositories.UserOperationClaimRepository.Constants;
 using EnterpriseArchitecture.Business.Repositories.UserOperationClaimRepository.Validation.FluentValidation;
 using EnterpriseArchitecture.Core.Aspects.Validation;
+using EnterpriseArchitecture.Core.Utilities.Business;
 using EnterpriseArchitecture.Core.Utilities.Result.Abstract;
 using EnterpriseArchitecture.Core.Utilities.Result.Concrete;
 using EnterpriseArchitecture.DataAccess.Repositories.UserOperationClaimRepository;
@@ -21,6 +22,15 @@ public class UserOperationClaimManager: IUserOperationClaimService
     [ValidationAspect(typeof(UserOperationClaimValidator))]
     public IResult Add(UserOperationClaimForAddDto userOperationClaimForAddDto)
     {
+        IResult? ruleResult = BusinessRule.Run(
+            IsOperationClaimSet(userOperationClaimForAddDto)
+        );
+        
+        if (ruleResult is { IsSuccess: false })
+        {
+            return new ErrorResult(ruleResult.Message);
+        }
+        
         var userOperationClaim = new UserOperationClaim
         {
             Id = Guid.NewGuid(),
@@ -91,5 +101,14 @@ public class UserOperationClaimManager: IUserOperationClaimService
         }
 
         return new SuccessDataResult<List<UserOperationClaimForListDto>>(userOperationClaimsForListDtos);
+    }
+
+    private IResult IsOperationClaimSet(UserOperationClaimForAddDto userOperationClaimForAddDto)
+    {
+        UserOperationClaim? result = _userOperationClaimDal.Get(x =>
+            x.UserId == userOperationClaimForAddDto.UserId &&
+            x.OperationClaimId == userOperationClaimForAddDto.OperationClaimId);
+        if (result != null) return new ErrorResult(UserOperationClaimMessages.OperationClaimAlreadySet);
+        return new SuccessResult();
     }
 }
