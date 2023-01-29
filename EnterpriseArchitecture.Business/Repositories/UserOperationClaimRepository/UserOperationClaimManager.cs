@@ -1,10 +1,16 @@
-﻿using EnterpriseArchitecture.Business.Repositories.UserOperationClaimRepository.Constants;
+﻿using EnterpriseArchitecture.Business.Repositories.OperationClaimRepository;
+using EnterpriseArchitecture.Business.Repositories.OperationClaimRepository.Constants;
+using EnterpriseArchitecture.Business.Repositories.UserOperationClaimRepository.Constants;
 using EnterpriseArchitecture.Business.Repositories.UserOperationClaimRepository.Validation.FluentValidation;
+using EnterpriseArchitecture.Business.Repositories.UserRepository;
+using EnterpriseArchitecture.Business.Repositories.UserRepository.Constants;
 using EnterpriseArchitecture.Core.Aspects.Validation;
 using EnterpriseArchitecture.Core.Utilities.Business;
 using EnterpriseArchitecture.Core.Utilities.Result.Abstract;
 using EnterpriseArchitecture.Core.Utilities.Result.Concrete;
 using EnterpriseArchitecture.DataAccess.Repositories.UserOperationClaimRepository;
+using EnterpriseArchitecture.DataTransformationObjects.Concrete.OperationClaim;
+using EnterpriseArchitecture.DataTransformationObjects.Concrete.User;
 using EnterpriseArchitecture.DataTransformationObjects.Concrete.UserOperationClaim;
 using EnterpriseArchitecture.Entities.Concrete;
 
@@ -13,17 +19,23 @@ namespace EnterpriseArchitecture.Business.Repositories.UserOperationClaimReposit
 public class UserOperationClaimManager: IUserOperationClaimService
 {
     private readonly IUserOperationClaimDal _userOperationClaimDal;
+    private readonly IOperationClaimService _operationClaimService;
+    private readonly IUserService _userService;
 
-    public UserOperationClaimManager(IUserOperationClaimDal userOperationClaimDal)
+    public UserOperationClaimManager(IUserOperationClaimDal userOperationClaimDal, IOperationClaimService operationClaimService, IUserService userService)
     {
         _userOperationClaimDal = userOperationClaimDal;
+        _operationClaimService = operationClaimService;
+        _userService = userService;
     }
 
     [ValidationAspect(typeof(UserOperationClaimValidator))]
     public IResult Add(UserOperationClaimForAddDto userOperationClaimForAddDto)
     {
         IResult? ruleResult = BusinessRule.Run(
-            IsOperationClaimSet(userOperationClaimForAddDto)
+            IsOperationClaimSet(userOperationClaimForAddDto),
+            IsOperationClaimExist(userOperationClaimForAddDto.OperationClaimId),
+            IsUserExist(userOperationClaimForAddDto.UserId)
         );
         
         if (ruleResult is { IsSuccess: false })
@@ -71,11 +83,27 @@ public class UserOperationClaimManager: IUserOperationClaimService
     public IDataResult<UserOperationClaimForListDto> GetById(Guid Id)
     {
         var userOperationClaim = _userOperationClaimDal.GetById(Id);
+        var userForListDto = _userService.FindById(userOperationClaim.UserId).Data;
+        var operationClaimForListDto = _operationClaimService.GetById(userOperationClaim.OperationClaimId).Data;
+
+        var user = new User
+        {
+            Email = userForListDto.Email,
+            Name = userForListDto.Name,
+            ImageUrl = userForListDto.ImageUrl
+        };
+
+        var operationClaim = new OperationClaim
+        {
+            Id = operationClaimForListDto.Id,
+            Name = operationClaimForListDto.Name
+        };
+        
         var userOperationClaimForListDto = new UserOperationClaimForListDto
         {
             Id = userOperationClaim.Id,
-            User = userOperationClaim.User,
-            OperationClaim = userOperationClaim.OperationClaim
+            User = user,
+            OperationClaim = operationClaim
         };
         return userOperationClaim != null
             ? new SuccessDataResult<UserOperationClaimForListDto>(userOperationClaimForListDto)
@@ -109,6 +137,22 @@ public class UserOperationClaimManager: IUserOperationClaimService
             x.UserId == userOperationClaimForAddDto.UserId &&
             x.OperationClaimId == userOperationClaimForAddDto.OperationClaimId);
         if (result != null) return new ErrorResult(UserOperationClaimMessages.OperationClaimAlreadySet);
+        return new SuccessResult();
+    }
+    
+    private IResult IsOperationClaimExist(Guid operationClaimId)
+    {
+        IDataResult<OperationClaimForListDto> result = _operationClaimService.GetById(operationClaimId);
+        if (result.IsSuccess == false || result.Data == null)
+            return new ErrorResult(OperationClaimMessage.OperationClaimNotFound);
+        return new SuccessResult();
+    }
+    
+    private IResult IsUserExist(Guid userId)
+    {
+        IDataResult<UserForListDto> result = _userService.FindById(userId);
+        if (result.IsSuccess == false || result.Data == null)
+            return new ErrorResult(UserMessages.UserNotFound);
         return new SuccessResult();
     }
 }
