@@ -11,6 +11,7 @@ public interface IUserService
     IDataResult<List<UserForListWithOnlyIdDto>> GetAllUsersWithId();
     IDataResult<List<UserForListDto>> GetAllUsers();
     IDataResult<UserForListDto> FindById(Guid id);
+    IDataResult<UserForListWithAllFieldsDto> FindByIdWithAllFields(Guid id);
     IResult RemoveById(Guid id);
     IResult Update(UserForUpdateDto userForUpdateDto);
     IResult ChangePassword(UserForChangePasswordDto userForChangePasswordDto);

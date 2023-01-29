@@ -83,11 +83,12 @@ public class UserOperationClaimManager: IUserOperationClaimService
     public IDataResult<UserOperationClaimForListDto> GetById(Guid Id)
     {
         var userOperationClaim = _userOperationClaimDal.GetById(Id);
-        var userForListDto = _userService.FindById(userOperationClaim.UserId).Data;
+        var userForListDto = _userService.FindByIdWithAllFields(userOperationClaim.UserId).Data;
         var operationClaimForListDto = _operationClaimService.GetById(userOperationClaim.OperationClaimId).Data;
 
         var user = new User
         {
+            Id = userForListDto.Id,
             Email = userForListDto.Email,
             Name = userForListDto.Name,
             ImageUrl = userForListDto.ImageUrl
@@ -119,11 +120,28 @@ public class UserOperationClaimManager: IUserOperationClaimService
         var userOperationClaimsForListDtos = new List<UserOperationClaimForListDto>();
         foreach (var userOperationClaim in userOperationClaims)
         {
+            var userForListDto = _userService.FindByIdWithAllFields(userOperationClaim.UserId).Data;
+            var operationClaimForListDto = _operationClaimService.GetById(userOperationClaim.OperationClaimId).Data;
+
+            var user = new User
+            {
+                Id = userForListDto.Id,
+                Email = userForListDto.Email,
+                Name = userForListDto.Name,
+                ImageUrl = userForListDto.ImageUrl
+            };
+
+            var operationClaim = new OperationClaim
+            {
+                Id = operationClaimForListDto.Id,
+                Name = operationClaimForListDto.Name
+            };
+            
             var opClaim = new UserOperationClaimForListDto
             {
                 Id = userOperationClaim.Id,
-                User = userOperationClaim.User,
-                OperationClaim = userOperationClaim.OperationClaim
+                User = user,
+                OperationClaim = operationClaim
             };
             userOperationClaimsForListDtos.Add(opClaim);
         }

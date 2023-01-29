@@ -125,6 +125,22 @@ public class UserManager : IUserService
         return new SuccessDataResult<UserForListDto>(userDto);
     }
 
+    public IDataResult<UserForListWithAllFieldsDto> FindByIdWithAllFields(Guid id)
+    {
+        var user = _userDal.GetById(id);
+        if (user == null) return new ErrorDataResult<UserForListWithAllFieldsDto>(UserMessages.UserNotFound);
+        var userDto = new UserForListWithAllFieldsDto
+        {
+            Id = user.Id,
+            Name = user.Name,
+            Email = user.Email,
+            ImageUrl = user.ImageUrl,
+            PasswordHash = user.PasswordHash,
+            PasswordSalt = user.PasswordSalt
+        };
+        return new SuccessDataResult<UserForListWithAllFieldsDto>(userDto);
+    }
+
     public IResult RemoveById(Guid id)
     {
         var user = _userDal.GetById(id);
